@@ -129,7 +129,7 @@ SELECT years,
 		salary_growth_percent,
 		price_growth_percent
 	FROM table_comparison
-WHERE price_growth_percent > 10 
+	WHERE price_growth_percent > 10 
 	AND salary_growth_percent < 10;
 	
 
