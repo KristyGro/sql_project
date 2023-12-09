@@ -88,9 +88,7 @@ SELECT price_year,
 WITH table_growth_rate AS (
 	SELECT tkg.price_year, 
 		tkg.category_code, 
-		tkg.name, 
-		tkg.average_price_czk,
-		tkg2.average_price_czk AS prev_year_average_price_czk,
+		tkg.name,
 		ROUND((tkg.average_price_czk - tkg2.average_price_czk) / tkg2.average_price_czk * 100, 2) AS price_growth_percent
 	FROM t_kristyna_grouslova_project_sql_primary_final tkg
 	JOIN t_kristyna_grouslova_project_sql_primary_final tkg2
@@ -100,7 +98,7 @@ WITH table_growth_rate AS (
 SELECT category_code, 
 		name, 
 		ROUND(avg(price_growth_percent), 2) AS average_growth_rate
-	FROM table_growth_rate
+		FROM table_growth_rate
 	GROUP BY category_code
 	ORDER BY average_growth_rate;
 
@@ -137,7 +135,6 @@ WHERE price_growth_percent > 10
 
 -- otázka č. 5:
 
-
 WITH table_GDP AS (
 	SELECT tkg1.payroll_year AS years,
 			round(avg(tkg1.average_salary_czk), 2) AS total_avg_salary_czk,
@@ -148,35 +145,41 @@ WITH table_GDP AS (
 			ON tkg1.payroll_year = tkg2.GDP_year
 			AND tkg2.country = 'Czech republic'
 		GROUP BY tkg1.payroll_year),
-table_GDP2 AS (
+table_growth_value AS (
 	SELECT tg1.years, 
 		tg1.GDP_per_capita - tg2.GDP_per_capita AS GDP_growth_czk,
 		tg1.total_avg_salary_czk - tg2.total_avg_salary_czk AS salary_growth_czk,
-		tg1.total_avg_price_czk - tg2.total_avg_price_czk AS price_growth_czk
-	FROM table_GDP tg1
+		tg1.total_avg_price_czk - tg2.total_avg_price_czk AS price_growth_czk,
+		ROUND((tg1.GDP_per_capita - tg2.GDP_per_capita) / tg2.GDP_per_capita * 100, 2) AS GDP_growth_percent, 
+		ROUND((tg1.total_avg_salary_czk - tg2.total_avg_salary_czk) / tg2.total_avg_salary_czk * 100, 2) AS salary_growth_percent,
+		ROUND((tg1.total_avg_price_czk - tg2.total_avg_price_czk) / tg2.total_avg_price_czk * 100, 2) AS price_growth_percent
+		FROM table_GDP tg1
 	JOIN table_GDP tg2
 		ON tg1.years = tg2.years + 1
 	GROUP BY tg1.years)
 SELECT years, 
 	GDP_growth_czk,
 	CASE
-		WHEN  GDP_growth_czk >= 1000 THEN 'výrazný růst HDP'
-		WHEN  GDP_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst HDP'
-		ELSE 'pokles HDP'
+		WHEN  GDP_growth_czk >= 1000 THEN 'výrazný růst'
+		WHEN  GDP_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst'
+		ELSE 'pokles'
 	END AS GDP_status,
-			salary_growth_czk,
+	salary_growth_czk,
 	CASE
-		WHEN salary_growth_czk >= 1000 THEN 'výrazný růst mezd'
-		WHEN salary_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst mezd'
-		ELSE 'pokles mezd'
+		WHEN salary_growth_czk >= 1000 THEN 'výrazný růst'
+		WHEN salary_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst'
+		ELSE 'pokles'
 	END AS salary_status,
-			price_growth_czk,
+	price_growth_czk,
 	CASE
-		WHEN price_growth_czk >= 3 THEN 'výrazný růst ceny potravin'
-		WHEN price_growth_czk BETWEEN 0 AND 2.99 THEN 'mírný růst ceny potravin'
-		ELSE 'pokles ceny potravin'
-	END AS price_status
-	FROM table_GDP2;
+		WHEN price_growth_czk >= 3 THEN 'výrazný růst'
+		WHEN price_growth_czk BETWEEN 0 AND 2.99 THEN 'mírný růst'
+		ELSE 'pokles'
+	END AS price_status,
+	GDP_growth_percent,
+	salary_growth_percent,
+	price_growth_percent
+	FROM table_growth_value;
 
 
 
