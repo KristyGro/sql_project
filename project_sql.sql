@@ -160,21 +160,21 @@ table_growth_value AS (
 SELECT years, 
 	GDP_growth_czk,
 	CASE
-		WHEN  GDP_growth_czk >= 1000 THEN 'výrazný růst'
-		WHEN  GDP_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst'
-		ELSE 'pokles'
+		WHEN  GDP_growth_czk >= 1000 THEN 'significant growth'
+		WHEN  GDP_growth_czk BETWEEN 0 AND 999 THEN 'moderate growth'
+		ELSE 'decrease'
 	END AS GDP_status,
 	salary_growth_czk,
 	CASE
-		WHEN salary_growth_czk >= 1000 THEN 'výrazný růst'
-		WHEN salary_growth_czk BETWEEN 0 AND 999 THEN 'mírný růst'
-		ELSE 'pokles'
+		WHEN salary_growth_czk >= 1000 THEN 'significant growth'
+		WHEN salary_growth_czk BETWEEN 0 AND 999 THEN 'moderate growth'
+		ELSE 'decrease'
 	END AS salary_status,
 	price_growth_czk,
 	CASE
-		WHEN price_growth_czk >= 3 THEN 'výrazný růst'
-		WHEN price_growth_czk BETWEEN 0 AND 2.99 THEN 'mírný růst'
-		ELSE 'pokles'
+		WHEN price_growth_czk >= 3 THEN 'significant growth'
+		WHEN price_growth_czk BETWEEN 0 AND 2.99 THEN 'moderate growth'
+		ELSE 'decrease'
 	END AS price_status,
 	GDP_growth_percent,
 	salary_growth_percent,
