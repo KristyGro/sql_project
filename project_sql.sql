@@ -1,3 +1,4 @@
+-- Discord user name: kristynagrouslova
 -- tabulka č. 1:
 
 CREATE TABLE t_kristyna_grouslova_project_SQL_primary_final
